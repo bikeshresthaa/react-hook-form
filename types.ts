@@ -1,11 +1,27 @@
 import type { FieldError, UseFormRegister } from "react-hook-form";
+import { z } from "zod";
 
-export type FormData = {
-  email: string;
-  userName: string;
-  isDeveloper: boolean;
-  exp_yrs: number;
-}
+export const UserSchema = z
+  .object({
+    email: z.email(),
+    userName: z.string(),
+    isDeveloper: z.boolean(),
+    exp_yrs: z
+      .number()
+      .min(1)
+      .max(10),
+    password: z
+      .string()
+      .min(8, { message: "Password too short!"})
+      .max(12, { message: "Password too long!" }),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"]
+  });
+
+export type FormData = z.infer<typeof UserSchema>
 
 export type FormFieldProps = {
   type: string;
@@ -14,6 +30,7 @@ export type FormFieldProps = {
   register: UseFormRegister<FormData>;
   error?: FieldError | undefined;
   style?: string | undefined;
+  valueAsNumber?: boolean;
 }
 
 
@@ -22,3 +39,5 @@ export type ValidFieldNames =
   | "userName"
   | "isDeveloper"
   | "exp_yrs"
+  | "password"
+  | "confirmPassword"

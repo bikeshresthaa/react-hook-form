@@ -7,10 +7,11 @@ const FormField: React.FC<FormFieldProps> = ({
   name,
   register,
   error,
+  valueAsNumber,
   style,
 }) => (
   <>
-    <input type={type} className={style} placeholder={placeholder} {...register(name)} />
+    <input type={type} className={style} placeholder={placeholder} {...register(name, {valueAsNumber})} />
     { error && <span className="text-red-700">{error.message}</span>}
   </>
 )

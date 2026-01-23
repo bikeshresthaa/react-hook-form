@@ -3,33 +3,30 @@ import { useForm } from "react-hook-form";
 import type { SubmitHandler } from "react-hook-form";
 import FormField from "./FormField";
 import type { FormData } from "../types";
-
+import { UserSchema } from "../types";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 
 function SimpleInput() {
-  const { register, handleSubmit, formState: { touchedFields, isDirty, isValid, isSubmitted, dirtyFields, errors }, watch } = useForm<FormData>({
-    defaultValues: {
-      userName: "",
-      email: "",
-      isDeveloper: false,
-      exp_yrs: undefined,
-    },
+  const { register, handleSubmit, formState: { errors, isValid, isSubmitted }, watch, } = useForm<FormData>({
+    resolver: zodResolver(UserSchema),
   });
   const [data, setData] = useState<FormData | null>(null);
   const watchIsDeveloper = watch("isDeveloper");
 
   const onSubmit: SubmitHandler<FormData> = (values) => {
     setData(values);
+    console.log(data);
   }
 
 
   return (
-    <div className="w-full flex justify-center items-center bg-gray-900 p-8 border-r border-dashed">
-      <div className="w-1/2 shadow-lg rounded-md bg-white p-8 flex flex-col" style={{height:'600px'}}>
+    <div className="min-h-screen flex justify-center items-center bg-gray-900 p-8 border-r border-dashed">
+      <div className="w-1/2 shadow-lg rounded-md bg-white p-8 flex flex-col justify-evenly">
         <h2 className="text-center font-medium text-2xl mb-4">
           React Hook Form
         </h2>
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-1 flex-col justify-evenly">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-1 flex-col gap-2">
           <FormField 
             type="userName"
             placeholder="some_user12"
@@ -47,6 +44,24 @@ function SimpleInput() {
             register={register}
             style="border-2 outline-none p-2 rounded-md"
             error={errors.email}
+          />
+
+          <FormField 
+            type="password"
+            placeholder="Password"
+            name="password"
+            style="border-2 outline-none p-2 rounded-md"
+            register={register}
+            error={errors.password}
+          />
+
+          <FormField 
+            type="password"
+            placeholder="Confirm Password"
+            name="confirmPassword"
+            style="border-2 outline-none p-2 rounded-md"
+            register={register}
+            error={errors.confirmPassword}
           />
 
           <div>
@@ -68,6 +83,7 @@ function SimpleInput() {
                   name="exp_yrs"
                   register={register}
                   error={errors.exp_yrs}
+                  valueAsNumber
                 />
               </div>
               : null
@@ -78,16 +94,9 @@ function SimpleInput() {
           <button className="flex justify-center p-2 rounded-md w-1/2 self-center bg-gray-900 text-white hover:bg-gray-800 m-4" type="submit">
             <span>Submit</span>
           </button>
+          <p className="flex justify-center self-center">{!isValid && isSubmitted && <span className="text-red-700">INVALID INPUT!</span>}</p>
         </form>
-        <div className="border-2 rounded-md outline-none">
-          <p><strong>Data: </strong> {JSON.stringify(data)}</p>
-          <p><strong>Valid?: </strong> {JSON.stringify(isValid)}</p>
-          <p><strong>Touched fields: </strong> {JSON.stringify(touchedFields)}</p>
-          <p><strong>isDirty?: </strong> {JSON.stringify(isDirty)}</p>
-          <p><strong>Dirty fields: </strong> {JSON.stringify(dirtyFields)}</p>
-          <p><strong>Errors: </strong> {JSON.stringify(errors?.email?.message)}</p>
-          <p><strong>Is submitted?: </strong> {JSON.stringify(isSubmitted)}</p>
-        </div>
+      
       </div>
     </div>
   )
