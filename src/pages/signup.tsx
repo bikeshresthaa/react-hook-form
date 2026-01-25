@@ -1,22 +1,47 @@
-import { useState } from "react";
+// import { useState } from "react";
 import { useForm } from "react-hook-form";
 import type { SubmitHandler } from "react-hook-form";
-import FormField from "./FormField";
-import type { FormData } from "../types";
-import { UserSchema } from "../types";
+import FormField from "../components/FormField";
+import type { UserSignUpDataType, StoredUserDataType } from "../types/types";
+import { UserSignUpSchema } from "../types/types";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "@tanstack/react-router";
+
 
 
 function SimpleInput() {
-  const { register, handleSubmit, formState: { errors, isValid, isSubmitted }, watch, } = useForm<FormData>({
-    resolver: zodResolver(UserSchema),
-  });
-  const [data, setData] = useState<FormData | null>(null);
-  const watchIsDeveloper = watch("isDeveloper");
+  const navigate = useNavigate();
 
-  const onSubmit: SubmitHandler<FormData> = (values) => {
-    setData(values);
-    console.log(data);
+  const { register, handleSubmit, formState: { errors, isValid, isSubmitted, isSubmitting }, setError, } = useForm<UserSignUpDataType>({
+    resolver: zodResolver(UserSignUpSchema),
+  });
+  // const [data, setData] = useState<UserSignUpDataType | null>(null);
+  // const watchIsDeveloper = watch("isDeveloper");
+
+  const onSubmit: SubmitHandler<UserSignUpDataType> = async (userData: UserSignUpDataType) => {
+    const rawUserData = localStorage.getItem('users')
+    const users: StoredUserDataType[] = rawUserData ? JSON.parse(rawUserData) : []
+
+    const userExists = users.some((user) => user.email === userData.email)
+
+    if(userExists) {
+      setError('email', {
+        message: 'User with this email already exists',
+      })
+      return
+    }
+
+    const newUser: StoredUserDataType = {
+      id: crypto.randomUUID(),
+      username: userData.userName,
+      email: userData.email,
+      password: userData.password,
+    }
+
+    users.push(newUser)
+    localStorage.setItem('users', JSON.stringify(users))
+
+    navigate({ to: '/login' })
   }
 
 
@@ -24,7 +49,7 @@ function SimpleInput() {
     <div className="min-h-screen flex justify-center items-center bg-gray-900 p-8 border-r border-dashed">
       <div className="w-1/2 shadow-lg rounded-md bg-white p-8 flex flex-col justify-evenly">
         <h2 className="text-center font-medium text-2xl mb-4">
-          React Hook Form
+          Sign Up!
         </h2>
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-1 flex-col gap-2">
           <FormField 
@@ -64,7 +89,7 @@ function SimpleInput() {
             error={errors.confirmPassword}
           />
 
-          <div>
+          {/* <div>
             <span className="mr-2">Are you a developer?</span>
             <FormField
               type="checkbox"
@@ -87,12 +112,12 @@ function SimpleInput() {
                 />
               </div>
               : null
-          }
+          } */}
 
          
   
-          <button className="flex justify-center p-2 rounded-md w-1/2 self-center bg-gray-900 text-white hover:bg-gray-800 m-4" type="submit">
-            <span>Submit</span>
+          <button disabled={isSubmitting} className="flex justify-center p-2 rounded-md w-1/2 self-center bg-gray-900 text-white hover:bg-gray-800 m-4" type="submit">
+            <span>Sign up</span>
           </button>
           <p className="flex justify-center self-center">{!isValid && isSubmitted && <span className="text-red-700">INVALID INPUT!</span>}</p>
         </form>
