@@ -1,7 +1,7 @@
 
-import type { FormFieldProps } from "../types/types";
+import type { SignUpFormFieldProps, LoginFormFieldProps } from "../types/types";
 
-const FormField: React.FC<FormFieldProps> = ({
+const SignUpFormField: React.FC<SignUpFormFieldProps> = ({
   type,
   placeholder,
   name,
@@ -16,4 +16,19 @@ const FormField: React.FC<FormFieldProps> = ({
   </>
 )
 
-export default FormField;
+const LogInFormField: React.FC<LoginFormFieldProps> = ({
+  type,
+  placeholder,
+  name,
+  register,
+  error,
+  valueAsNumber,
+  style,
+}) => (
+  <>
+    <input type={type} className={style} placeholder={placeholder} {...register(name, {valueAsNumber})} />
+    { error && <span className="text-red-700">{error.message}</span>}
+  </>
+)
+
+export { SignUpFormField, LogInFormField };

@@ -1,16 +1,21 @@
 // import { useState } from "react";
 import { useForm } from "react-hook-form";
 import type { SubmitHandler } from "react-hook-form";
-import FormField from "../components/FormField";
+import { SignUpFormField } from "../components/FormField";
 import type { UserSignUpDataType, StoredUserDataType } from "../types/types";
 import { UserSignUpSchema } from "../types/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { useAuth } from "../auth/UseAuth";
 
 
 
-function SimpleInput() {
+function Signup() {
   const navigate = useNavigate();
+
+  const { isAuthenticated } = useAuth();
+
 
   const { register, handleSubmit, formState: { errors, isValid, isSubmitted, isSubmitting }, setError, } = useForm<UserSignUpDataType>({
     resolver: zodResolver(UserSignUpSchema),
@@ -18,13 +23,24 @@ function SimpleInput() {
   // const [data, setData] = useState<UserSignUpDataType | null>(null);
   // const watchIsDeveloper = watch("isDeveloper");
 
+  useEffect(() => {
+    console.log(isAuthenticated)
+    function checkAuth() {
+      if (isAuthenticated) {
+        navigate({ to: "/dashboard" })
+        return null
+      }
+    }
+    checkAuth();
+  }, [isAuthenticated, navigate])
+
   const onSubmit: SubmitHandler<UserSignUpDataType> = async (userData: UserSignUpDataType) => {
     const rawUserData = localStorage.getItem('users')
     const users: StoredUserDataType[] = rawUserData ? JSON.parse(rawUserData) : []
 
     const userExists = users.some((user) => user.email === userData.email)
 
-    if(userExists) {
+    if (userExists) {
       setError('email', {
         message: 'User with this email already exists',
       })
@@ -46,13 +62,13 @@ function SimpleInput() {
 
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-gray-900 p-8 border-r border-dashed">
-      <div className="w-1/2 shadow-lg rounded-md bg-white p-8 flex flex-col justify-evenly">
+    <div className="min-h-[calc(100vh - 5rem)] flex justify-center items-center bg-white p-8">
+      <div className="w-full max-width-md shadow-lg rounded-md bg-white p-8 flex flex-col justify-evenly">
         <h2 className="text-center font-medium text-2xl mb-4">
           Sign Up!
         </h2>
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-1 flex-col gap-2">
-          <FormField 
+          <SignUpFormField
             type="userName"
             placeholder="some_user12"
             name="userName"
@@ -62,7 +78,7 @@ function SimpleInput() {
           />
 
 
-          <FormField 
+          <SignUpFormField
             type="email"
             placeholder="something@bikesh.com"
             name="email"
@@ -71,7 +87,7 @@ function SimpleInput() {
             error={errors.email}
           />
 
-          <FormField 
+          <SignUpFormField
             type="password"
             placeholder="Password"
             name="password"
@@ -80,7 +96,7 @@ function SimpleInput() {
             error={errors.password}
           />
 
-          <FormField 
+          <SignUpFormField
             type="password"
             placeholder="Confirm Password"
             name="confirmPassword"
@@ -114,17 +130,17 @@ function SimpleInput() {
               : null
           } */}
 
-         
-  
+
+
           <button disabled={isSubmitting} className="flex justify-center p-2 rounded-md w-1/2 self-center bg-gray-900 text-white hover:bg-gray-800 m-4" type="submit">
             <span>Sign up</span>
           </button>
           <p className="flex justify-center self-center">{!isValid && isSubmitted && <span className="text-red-700">INVALID INPUT!</span>}</p>
         </form>
-      
+
       </div>
     </div>
   )
 }
 
-export default SimpleInput;
+export default Signup;

@@ -1,6 +1,12 @@
 import type { FieldError, UseFormRegister } from "react-hook-form";
 import { z } from "zod";
 
+export const loginSearchSchema = z.object({
+  redirect: z.string().optional(),
+})
+
+export type LoginSearch = z.infer<typeof loginSearchSchema>
+
 export const UserSignUpSchema = z
   .object({
     email: z.email(),
@@ -32,6 +38,21 @@ export const UserLoginSchema = z
     .max(12, { message: "Password too long!" }),
   });
 
+export type UserAuth = {
+  id: string;
+  username: string;
+  email: string;
+
+}
+
+export type AuthState = {
+  isAuthenticated: boolean;
+  user: UserAuth | null;
+  login: (email: string, password: string) => Promise<void>;
+  logout: () => void;
+  isLoading: boolean;
+}
+
 export type StoredUserDataType = {
   id: string;
   username: string;
@@ -43,9 +64,9 @@ export type UserLoginDataType = z.infer<typeof UserLoginSchema>
 
 export type UserSignUpDataType = z.infer<typeof UserSignUpSchema>
 
-export type FormFieldProps = {
+export type SignUpFormFieldProps = {
   type: string;
-  name: ValidFieldNames;
+  name: SignUpValidFieldNames;
   placeholder?: string | undefined;
   register: UseFormRegister<UserSignUpDataType>;
   error?: FieldError | undefined;
@@ -53,8 +74,21 @@ export type FormFieldProps = {
   valueAsNumber?: boolean;
 }
 
+export type LoginFormFieldProps = {
+  type: string;
+  name: LoginValidFieldNames;
+  placeholder?: string | undefined;
+  register: UseFormRegister<UserLoginDataType>;
+  error?: FieldError | undefined;
+  style?: string | undefined;
+  valueAsNumber?: boolean;
+}
 
-export type ValidFieldNames = 
+export type LoginValidFieldNames = 
+  | "email"
+  | "password"
+
+export type SignUpValidFieldNames = 
   | "email"
   | "userName"
   | "password"
