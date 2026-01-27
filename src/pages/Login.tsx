@@ -3,7 +3,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { UserLoginSchema } from "../types/types";
 import type { UserLoginDataType } from "../types/types";
 import { useAuth } from "../auth/UseAuth"
-import { LogInFormField } from "../components/FormField"
+import { FormField } from "../components/FormField"
 import { useForm } from 'react-hook-form'
 import { useEffect } from "react";
 
@@ -11,19 +11,19 @@ import { useEffect } from "react";
 function Login() {
   const auth = useAuth();
   const navigate = useNavigate();
- 
+
 
   const { register, handleSubmit, formState: { errors, isValid, isSubmitted, isSubmitting }, } = useForm<UserLoginDataType>({
     resolver: zodResolver(UserLoginSchema)
   });
 
-    useEffect(() => {
-      console.log(auth.isAuthenticated)
-     function checkAuth() {
+  useEffect(() => {
+    console.log(auth.isAuthenticated)
+    function checkAuth() {
       if (auth?.isAuthenticated) {
-      navigate({ to: "/dashboard" })
-      return null
-     }
+        navigate({ to: "/dashboard" })
+        return null
+      }
     }
     checkAuth();
   }, [auth, navigate])
@@ -33,7 +33,7 @@ function Login() {
     try {
       await auth.login(userData.email, userData.password)
       navigate({ to: "/dashboard" })
-    } catch(error) {
+    } catch (error) {
       console.error(error)
     }
   }
@@ -46,7 +46,7 @@ function Login() {
         </h2>
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-1 flex-col gap-2">
 
-          <LogInFormField 
+          <FormField
             type="email"
             placeholder="something@bikesh.com"
             name="email"
@@ -55,7 +55,7 @@ function Login() {
             error={errors.email}
           />
 
-          <LogInFormField 
+          <FormField
             type="password"
             placeholder="Password"
             name="password"
@@ -63,14 +63,14 @@ function Login() {
             register={register}
             error={errors.password}
           />
-  
+
           <button disabled={isSubmitting} className="flex justify-center p-2 rounded-md w-1/2 self-center bg-gray-900 text-white hover:bg-gray-800 m-4" type="submit">
             <span>Login</span>
           </button>
           <p className="flex justify-center self-center">{!isValid && isSubmitted && <span className="text-red-700">INVALID USERNAME OR PASSWORD!</span>}</p>
-        
+
         </form>
-      
+
       </div>
     </div>
   )

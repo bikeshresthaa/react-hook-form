@@ -8,7 +8,7 @@ export const Route = createFileRoute('/login')({
   }),
   beforeLoad: ({ context, search }) => {
     if (context.auth.isAuthenticated) {
-      throw redirect({ to: search.redirect || '/login' })
+      throw redirect({ to: search.redirect || '/dashboard' })
     }
   },
   component: Login,

@@ -34,6 +34,7 @@ function Dashboard() {
         <h2 className="text-xl font-semibold mb-2">Welcome back!</h2>
         <p>Hello, <strong>{auth.user?.username}</strong>!</p>
         <p>Email: {auth.user?.email}</p>
+        <p>Phone: {auth.user?.phoneNumber || `Not provided`}</p>
       </div>
       <div className='flex justify-center items-center mt-2'>
         <button

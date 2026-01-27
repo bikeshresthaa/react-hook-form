@@ -1,4 +1,4 @@
-import type { FieldError, UseFormRegister } from "react-hook-form";
+import type { FieldError, FieldValues, Path, UseFormRegister } from "react-hook-form";
 import { z } from "zod";
 
 export const loginSearchSchema = z.object({
@@ -7,21 +7,50 @@ export const loginSearchSchema = z.object({
 
 export type LoginSearch = z.infer<typeof loginSearchSchema>
 
-export const UserSignUpSchema = z
+const today = new Date();
+
+export const UserEventSchema = z
+  .object({
+    eventID: z.string,
+    eventDate: z
+      .coerce
+      .date()
+      .refine((date) => date >= today, {
+        message: "Date cannot be in past!",
+      }),
+    eventName: z
+      .string()
+      .min(3, "Please enter event name!"),
+    venue: z
+      .string()
+      .min(1, "Please enter venue")
+      .optional(),
+    addDescription: z.boolean().optional(),
+    description: z
+      .string()
+      .min(5, "Description should be at least 5 characters")
+      .optional(),
+  })
+
+export const UserLoginSchema = z
   .object({
     email: z.email(),
-    userName: z
-      .string()
-      .min(1, "Please enter your username!"),
-    // isDeveloper: z.boolean(),
-    // exp_yrs: z
-    //   .number()
-    //   .min(1)
-    //   .max(10),
     password: z
       .string()
-      .min(8, { message: "Password too short!"})
+      .min(8, { message: "Password too short!" })
       .max(12, { message: "Password too long!" }),
+  });
+
+export const UserSignUpSchema = z
+  .object({
+    ...UserLoginSchema.shape,
+    userName: z
+      .string()
+      .min(8, "Please enter your username! (Min length: 8char"),
+    getNotified: z.boolean(),
+    phoneNumber: z
+      .string()
+      .length(10, { message: "Phone number must have exactly 10 digits!" }),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -29,20 +58,13 @@ export const UserSignUpSchema = z
     path: ["confirmPassword"]
   });
 
-export const UserLoginSchema = z
-  .object({
-    email: z.email(),
-    password: z
-    .string()
-    .min(8, { message: "Password too short!" })
-    .max(12, { message: "Password too long!" }),
-  });
 
 export type UserAuth = {
   id: string;
   username: string;
   email: string;
-
+  getNotified: boolean;
+  phoneNumber: string;
 }
 
 export type AuthState = {
@@ -58,40 +80,51 @@ export type StoredUserDataType = {
   username: string;
   email: string;
   password: string;
+  getNotified: boolean;
+  phoneNumber: string;
 }
+
+export type InputFieldProps<T extends FieldValues> = {
+  type: string;
+  name: Path<T>;
+  placeholder?: string | undefined;
+  register: UseFormRegister<T>;
+  error?: FieldError | undefined;
+  style?: string | undefined;
+  valueAsNumber?: boolean;
+}
+
+export type EventStore = {
+  userEvents: Record<string, UserEventType[]>;
+  addEvent: (userId: string, event: UserEventType) => void;
+  getEvents: (userId: string) => UserEventType[];
+  removeEvent: (userId: string, eventID: string) => void;
+}
+
+export type LoginValidFieldNames =
+| "email"
+| "password"
+
+export type SignUpValidFieldNames =
+| "email"
+| "userName"
+| "password"
+| "confirmPassword"
+| "getNotified"
+| "phoneNumber"
+// | "isDeveloper"
+// | "exp_yrs"
+
+export type ValidEventFieldNames =
+| "eventDate"
+| "eventName"
+| "venue"
+| "addDescription"
+| "description"
 
 export type UserLoginDataType = z.infer<typeof UserLoginSchema>
 
 export type UserSignUpDataType = z.infer<typeof UserSignUpSchema>
 
-export type SignUpFormFieldProps = {
-  type: string;
-  name: SignUpValidFieldNames;
-  placeholder?: string | undefined;
-  register: UseFormRegister<UserSignUpDataType>;
-  error?: FieldError | undefined;
-  style?: string | undefined;
-  valueAsNumber?: boolean;
-}
+export type UserEventType = z.infer<typeof UserEventSchema>
 
-export type LoginFormFieldProps = {
-  type: string;
-  name: LoginValidFieldNames;
-  placeholder?: string | undefined;
-  register: UseFormRegister<UserLoginDataType>;
-  error?: FieldError | undefined;
-  style?: string | undefined;
-  valueAsNumber?: boolean;
-}
-
-export type LoginValidFieldNames = 
-  | "email"
-  | "password"
-
-export type SignUpValidFieldNames = 
-  | "email"
-  | "userName"
-  | "password"
-  | "confirmPassword"
-  // | "isDeveloper"
-  // | "exp_yrs"
