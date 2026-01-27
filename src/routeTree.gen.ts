@@ -14,6 +14,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedEventRouteImport } from './routes/_authenticated/event'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 
 const SignupRoute = SignupRouteImport.update({
@@ -40,6 +41,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedEventRoute = AuthenticatedEventRouteImport.update({
+  id: '/event',
+  path: '/event',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -52,6 +58,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/event': typeof AuthenticatedEventRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -59,6 +66,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/event': typeof AuthenticatedEventRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -68,12 +76,13 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/event': typeof AuthenticatedEventRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/home' | '/login' | '/signup' | '/dashboard'
+  fullPaths: '/' | '/home' | '/login' | '/signup' | '/dashboard' | '/event'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/home' | '/login' | '/signup' | '/dashboard'
+  to: '/' | '/home' | '/login' | '/signup' | '/dashboard' | '/event'
   id:
     | '__root__'
     | '/'
@@ -82,6 +91,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/_authenticated/dashboard'
+    | '/_authenticated/event'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -129,6 +139,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/event': {
+      id: '/_authenticated/event'
+      path: '/event'
+      fullPath: '/event'
+      preLoaderRoute: typeof AuthenticatedEventRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -141,10 +158,12 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedEventRoute: typeof AuthenticatedEventRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedEventRoute: AuthenticatedEventRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(

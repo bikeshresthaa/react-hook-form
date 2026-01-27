@@ -1,5 +1,10 @@
-import type { FieldError, FieldValues, Path, UseFormRegister } from "react-hook-form";
+import type { FieldError, FieldValues, UseFormRegister, FieldErrorsImpl, Merge, Path } from "react-hook-form";
 import { z } from "zod";
+
+type RHFERROR = 
+  | FieldError
+  | Merge<FieldError, FieldErrorsImpl>
+  | undefined;
 
 export const loginSearchSchema = z.object({
   redirect: z.string().optional(),
@@ -11,7 +16,6 @@ const today = new Date();
 
 export const UserEventSchema = z
   .object({
-    eventID: z.string,
     eventDate: z
       .coerce
       .date()
@@ -25,7 +29,7 @@ export const UserEventSchema = z
       .string()
       .min(1, "Please enter venue")
       .optional(),
-    addDescription: z.boolean().optional(),
+    addDescription: z.boolean(),
     description: z
       .string()
       .min(5, "Description should be at least 5 characters")
@@ -89,7 +93,7 @@ export type InputFieldProps<T extends FieldValues> = {
   name: Path<T>;
   placeholder?: string | undefined;
   register: UseFormRegister<T>;
-  error?: FieldError | undefined;
+  error?: RHFERROR; 
   style?: string | undefined;
   valueAsNumber?: boolean;
 }
@@ -128,3 +132,6 @@ export type UserSignUpDataType = z.infer<typeof UserSignUpSchema>
 
 export type UserEventType = z.infer<typeof UserEventSchema>
 
+export type StoredUserEventType = UserEventType & {
+  id: string;
+}

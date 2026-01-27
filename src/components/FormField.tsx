@@ -19,7 +19,7 @@ function FormField<T extends FieldValues>({
         placeholder={placeholder}
         {...register(name, { valueAsNumber })}
       />
-      {error && <span className="text-red-700">{error.message}</span>}
+      {error && typeof error.message === "string" && <span className="text-red-700">{error.message}</span>}
     </>
   )
 }
