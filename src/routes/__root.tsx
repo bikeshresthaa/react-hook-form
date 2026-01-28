@@ -9,7 +9,7 @@ interface MyRouterContext {
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: () => {
     return (
-      <div>
+      <div className="w-full p-8">
 
         <nav className="bg-neutral-primary fixed w-full z-20 top-0 start-0 border-b border-default">
           <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
@@ -30,13 +30,16 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
                 <li>
                   <a href="/dashboard" className="py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0 md:dark:hover:bg-transparent">Dashboard</a>
                 </li>
+                <li>
+                  <a href="/event" className="py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0 md:dark:hover:bg-transparent">Events</a>
+                </li>
           
               </ul>
             </div>
           </div>
         </nav>
 
-        <div className="pt-20">
+        <div className="pt-10">
           <Outlet />  
 
         </div>

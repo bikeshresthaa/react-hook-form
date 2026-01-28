@@ -99,9 +99,9 @@ export type InputFieldProps<T extends FieldValues> = {
 }
 
 export type EventStore = {
-  userEvents: Record<string, UserEventType[]>;
-  addEvent: (userId: string, event: UserEventType) => void;
-  getEvents: (userId: string) => UserEventType[];
+  userEvents: Record<string, StoredUserEventType[]>;
+  addEvent: (userId: string, event: StoredUserEventType) => void;
+  getEvents: (userId: string) => StoredUserEventType[];
   removeEvent: (userId: string, eventID: string) => void;
 }
 
@@ -132,6 +132,7 @@ export type UserSignUpDataType = z.infer<typeof UserSignUpSchema>
 
 export type UserEventType = z.infer<typeof UserEventSchema>
 
-export type StoredUserEventType = UserEventType & {
-  id: string;
+export type StoredUserEventType = Omit<UserEventType, "eventDate"> & {
+  eventID: string;
+  eventDate: Date | string;
 }

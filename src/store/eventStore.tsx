@@ -14,7 +14,10 @@ const useEventStore = create(
         },
         getEvents: (userID) => {
           const currentUserEvents = get().userEvents[userID] || []
-          return currentUserEvents;
+          return currentUserEvents.map((event) => ({
+            ...event,
+            eventDate: new Date(event.eventDate),
+          }));
         },
         removeEvent: (userID, eventID) => {
           set((state) => ({
