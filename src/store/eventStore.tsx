@@ -7,6 +7,13 @@ const useEventStore = create(
     persist<EventStore>(
       (set, get) => ({
         userEvents: {},
+        updateEvent: (userID, eventID, updatedEvent) => {
+          set((state) => ({
+            userEvents: { ...state.userEvents, [userID]: (state.userEvents[userID] || []).map((event) => 
+              event.eventID === eventID ? {...event, updatedEvent} : event
+            )}
+          }))
+        },
         addEvent: (userID, event) => {
           set((state) => ({
             userEvents: { ...state.userEvents, [userID]: [...(state.userEvents[userID] || []), event] }
@@ -20,6 +27,7 @@ const useEventStore = create(
           }));
         },
         removeEvent: (userID, eventID) => {
+  
           set((state) => ({
             userEvents: {
               ...state.userEvents,

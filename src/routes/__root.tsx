@@ -1,5 +1,5 @@
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router"
-import { TanStackRouterDevtools } from "@tanstack/react-router-devtools"
+// import { TanStackRouterDevtools } from "@tanstack/react-router-devtools"
 import type { AuthState } from "../types/types"
 
 interface MyRouterContext {
@@ -11,7 +11,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     return (
       <div className="w-full p-8">
 
-        <nav className="bg-neutral-primary fixed w-full z-20 top-0 start-0 border-b border-default">
+        <nav className="bg-white fixed w-full z-20 top-0 start-0 border-b border-default">
           <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
             <a className="flex items-center space-x-3 rtl:space-x-reverse">
                 <span className="self-center text-xl text-heading font-semibold whitespace-nowrap">Tan-auth</span>
@@ -44,7 +44,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 
         </div>
 
-        <TanStackRouterDevtools />
+        {/* <TanStackRouterDevtools /> */}
       </div>
     )
   },

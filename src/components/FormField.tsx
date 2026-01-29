@@ -15,11 +15,11 @@ function FormField<T extends FieldValues>({
     <>
       <input
         type={type}
-        className={style}
+        className={`${style} ${error ? 'border-red-400 focus:border-red-300 focus:ring-red-300' : ''}`}
         placeholder={placeholder}
         {...register(name, { valueAsNumber })}
       />
-      {error && typeof error.message === "string" && <span className="text-red-700">{error.message}</span>}
+      {error && typeof error.message === "string" && <span className="text-red-700 text-sm">{error.message}</span>}
     </>
   )
 }

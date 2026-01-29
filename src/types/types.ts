@@ -24,7 +24,7 @@ export const UserEventSchema = z
       }),
     eventName: z
       .string()
-      .min(3, "Please enter event name!"),
+      .min(1, "Please enter event name!"),
     venue: z
       .string()
       .min(1, "Please enter venue")
@@ -32,7 +32,7 @@ export const UserEventSchema = z
     addDescription: z.boolean(),
     description: z
       .string()
-      .min(5, "Description should be at least 5 characters")
+      .min(1, "Description cannot be empty when selected!")
       .optional(),
   })
 
@@ -100,6 +100,7 @@ export type InputFieldProps<T extends FieldValues> = {
 
 export type EventStore = {
   userEvents: Record<string, StoredUserEventType[]>;
+  updateEvent: (userId: string, eventID: string, updatedEvent: UserEventType) => void;
   addEvent: (userId: string, event: StoredUserEventType) => void;
   getEvents: (userId: string) => StoredUserEventType[];
   removeEvent: (userId: string, eventID: string) => void;
