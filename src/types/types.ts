@@ -28,13 +28,23 @@ export const UserEventSchema = z
       .min(1, "Please enter event name!"),
     venue: z
       .string()
-      .min(1, "Please enter venue")
+      .transform((venue) => venue.trim() || undefined)
       .optional(),
     addDescription: z.boolean(),
     description: z
       .string()
-      .min(1, "Description cannot be empty when selected!")
+      .transform((description) => description.trim() || undefined)
       .optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.addDescription && !data.description?.trim()) {
+      ctx.addIssue({
+        path: ["description"],
+        message: "Description cannot be empty while selected!",
+        code : "custom",
+      }
+      )
+    }
   })
 
 export const UserLoginSchema = z

@@ -17,16 +17,17 @@ function Event() {
   const [isAddMode, setIsAddMode] = useState<boolean>(true);
   const [editEventId, setEditEventId] = useState<string | null>(null);
 
-
-  const { register, handleSubmit, reset, formState: { errors, isSubmitting, }, watch, } = useForm({
-    resolver: zodResolver(UserEventSchema),
-    defaultValues: {
+  const defaultValues = {
       eventDate: "",
       eventName: "",
       venue: "",
       description: "",
       addDescription: false,
     }
+
+  const { register, handleSubmit, reset, formState: { errors, isSubmitting, }, watch, } = useForm({
+    resolver: zodResolver(UserEventSchema),
+    defaultValues,
   })
 
   const { userEvents, addEvent, removeEvent, updateEvent } = useEventStore(
@@ -61,16 +62,16 @@ function Event() {
         venue: eventData.venue,
       }
       updateEvent(userID, editEventId, updateEventData);
-      reset()
-      setEditEventId(null);
-      setIsAddMode(true);
+      reset(defaultValues);
     }
+    setEditEventId(null);
+    setIsAddMode(true);
   }
 
   const handleCancelEdit = () => {
-    reset();
     setEditEventId(null);
     setIsAddMode(true);
+    reset(defaultValues);
   }
 
   const handleAdd = (eventData: UserEventType) => {
@@ -96,7 +97,6 @@ function Event() {
     if (eventToEdit) {
       const { eventID, ...populateEvent } = { ...eventToEdit };
       reset(populateEvent);
-      console.log(populateEvent)
       setIsAddMode(false);
       setEditEventId(eventID);
 
