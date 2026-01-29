@@ -21,7 +21,8 @@ export const UserEventSchema = z
       .date()
       .refine((date) => date >= today, {
         message: "Date cannot be in past!",
-      }),
+      })
+      .transform((date) => date.toISOString().split('T')[0]),
     eventName: z
       .string()
       .min(1, "Please enter event name!"),
@@ -135,5 +136,5 @@ export type UserEventType = z.infer<typeof UserEventSchema>
 
 export type StoredUserEventType = Omit<UserEventType, "eventDate"> & {
   eventID: string;
-  eventDate: Date | string;
+  eventDate: string;
 }

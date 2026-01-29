@@ -38,7 +38,6 @@ function Event() {
   const watchAddDescription = watch("addDescription");
 
   const onSubmit = (eventData: UserEventType) => {
-    console.log("onsubmit called")
 
     if (!userID) {
       return
@@ -49,9 +48,6 @@ function Event() {
 
 
   const handleEdit = (eventData: UserEventType) => {
-    console.log("handle edit called")
-    console.log(`isAddMode: ${isAddMode}`)
-    console.log(`edit id: ${editEventId}`)
     if (userID && editEventId) {
       console.log("inside if")
       const updateEventData = {
@@ -62,14 +58,10 @@ function Event() {
         venue: eventData.venue,
       }
       updateEvent(userID, editEventId, updateEventData);
-      console.log("after updatedata")
       reset();
       setEditEventId(null);
       setIsAddMode(true);
     }
-    console.log(`isAddMode: ${isAddMode}`)
-    console.log(`edit id: ${editEventId}`)
-    console.log("outside if")
   }
 
   const handleCancelEdit = () => {
@@ -79,7 +71,6 @@ function Event() {
   }
 
   const handleAdd = (eventData: UserEventType) => {
-    console.log("handle add called")
     const newEvent: StoredUserEventType = {
       eventID: crypto.randomUUID(),
       eventDate: eventData.eventDate,
@@ -101,8 +92,8 @@ function Event() {
     if (eventToEdit) {
       const { eventID, ...populateEvent } = { ...eventToEdit };
       reset(populateEvent);
+      console.log(populateEvent)
       setIsAddMode(false);
-      console.log(`After edit mode: IsAddMode = ${isAddMode}`)
       setEditEventId(eventID);
 
     }
