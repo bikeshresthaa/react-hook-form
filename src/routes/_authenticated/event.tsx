@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { UserEventSchema, type UserEventType, type StoredUserEventType } from "../../types/types";
 import { FormField } from "../../components/FormField";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export const Route = createFileRoute('/_authenticated/event')({
   component: Event,
@@ -18,9 +18,13 @@ function Event() {
   const [editEventId, setEditEventId] = useState<string | null>(null);
 
 
-  const { register, handleSubmit, reset, formState: { errors, isSubmitting, isSubmitSuccessful, }, watch, } = useForm({
+  const { register, handleSubmit, reset, formState: { errors, isSubmitting, }, watch, } = useForm({
     resolver: zodResolver(UserEventSchema),
     defaultValues: {
+      eventDate: "",
+      eventName: "",
+      venue: "",
+      description: "",
       addDescription: false,
     }
   })
@@ -49,7 +53,6 @@ function Event() {
 
   const handleEdit = (eventData: UserEventType) => {
     if (userID && editEventId) {
-      console.log("inside if")
       const updateEventData = {
         eventDate: eventData.eventDate,
         eventName: eventData.eventName,
@@ -58,7 +61,7 @@ function Event() {
         venue: eventData.venue,
       }
       updateEvent(userID, editEventId, updateEventData);
-      reset();
+      reset()
       setEditEventId(null);
       setIsAddMode(true);
     }
@@ -81,6 +84,7 @@ function Event() {
     }
     if (userID) {
       addEvent(userID, newEvent);
+      reset()
     }
   }
 
@@ -100,11 +104,11 @@ function Event() {
 
   }
 
-  useEffect(() => {
-    if (isSubmitSuccessful) {
-      reset();
-    }
-  }, [isSubmitSuccessful, reset])
+  // useEffect(() => {
+  //   if (isSubmitSuccessful) {
+  //     reset();
+  //   }
+  // }, [isSubmitSuccessful, reset])
 
   return (
     <div className="min-h-[calc(100vh - 5rem)] bg-white p-1">
@@ -176,7 +180,7 @@ function Event() {
               {
                 !isAddMode && (
                   <button
-                    className="flex m-2 justify-center p-1.5 rounded-md w-1/2 self-center bg-gray-200/50 text-white hover:bg-gray-800 hover:shadow-lg"
+                    className="flex m-2 justify-center p-1.5 rounded-md w-1/2 self-center bg-gray-900 text-white hover:text-black hover:bg-gray-400/90 hover:shadow-lg"
                     onClick={handleCancelEdit}
                     type="button"
                   >

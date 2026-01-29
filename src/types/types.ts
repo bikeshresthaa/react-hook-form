@@ -103,7 +103,6 @@ export type EventStore = {
   userEvents: Record<string, StoredUserEventType[]>;
   updateEvent: (userId: string, eventID: string, updatedEvent: UserEventType) => void;
   addEvent: (userId: string, event: StoredUserEventType) => void;
-  getEvents: (userId: string) => StoredUserEventType[];
   removeEvent: (userId: string, eventID: string) => void;
 }
 
