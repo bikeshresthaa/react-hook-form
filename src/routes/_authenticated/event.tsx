@@ -25,7 +25,7 @@ function Event() {
       addDescription: false,
     }
 
-  const { register, handleSubmit, reset, formState: { errors, isSubmitting, }, watch, } = useForm({
+  const { register, handleSubmit, reset, formState: { errors, isSubmitting, isDirty }, watch, } = useForm({
     resolver: zodResolver(UserEventSchema),
     defaultValues,
   })
@@ -68,7 +68,7 @@ function Event() {
     setIsAddMode(true);
   }
 
-  const handleCancelEdit = () => {
+  const handleCancel = () => {
     setEditEventId(null);
     setIsAddMode(true);
     reset(defaultValues);
@@ -180,16 +180,18 @@ function Event() {
                   <span>{isAddMode ? "Add Event" : "Edit Event"}</span>
                 </button>
                 {
-                  !isAddMode && editEventId && (
+                  ((!isAddMode && editEventId) || (isAddMode && isDirty)) && (
                     <button
                       className="flex m-2 justify-center p-1.5 rounded-md w-1/4 self-center bg-gray-900/90 text-white hover:text-black hover:bg-gray-400/90 hover:shadow-lg"
-                      onClick={handleCancelEdit}
+                      onClick={handleCancel}
                       type="button"
                     >
                       <span>Cancel</span>
                     </button>
                   )
                 }
+
+
               </div>
 
             </form>
